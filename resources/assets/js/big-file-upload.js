@@ -28,8 +28,6 @@ var BigFileUpload = {
             this.parts = [],
             this.locale;
 
-        // console.log('ggg', this.resource);
-
         if (!this.blobSlice) {
             this.outputDom.text(this.messages.error_unsupported_browser);
             return;
@@ -43,11 +41,37 @@ var BigFileUpload = {
             return;
         }
         this.outputDom.text(this.messages.status_upload_begin);
+
+        //处理名字
+        this.encodedObjectName();
+        if (!(this.fileName)) {
+            this.outputDom.text(this.messages.error_encoded_object_name);
+            return;
+        }
+
         if (!('FileReader' in window) || !('File' in window) || typeof SparkMD5 === 'undefined') {
             this.preprocess();
         } else {
             this.calculateHash();
         }
+    },
+    encodedObjectName : function () {
+        var _this = this;
+        $.ajax({
+            url: '/admin/weiaibaicai/big-file-upload/encoded-object-name',
+            type: 'POST',
+            dataType: 'json',
+            contentType: 'application/json',
+            data:JSON.stringify({'file_name':_this.resourceName}),
+            async: false,
+            success: function (rst) {
+                //获取名字
+                if (rst.error === 'undefined' || rst.error) {
+                    return;
+                }
+                _this.setFileName(rst.data.object_name);
+            }
+        });
     },
     calculateHash: function () {
         var _this = this,
@@ -82,15 +106,14 @@ var BigFileUpload = {
     preprocess: function () {
         var _this = this;
 
-        // console.log('111111 **** 333333');
         $.ajax({
-            url: this.storageHost + '/buckets/' + _this.bucket + '/objects/~/uploads',
+            // url: this.storageHost + '/buckets/' + _this.bucket + '/objects/~/uploads',
+            url: this.storageHost + '/buckets/' + _this.bucket + '/objects/'+ _this.fileName +'/uploads',
             type: 'POST',
             dataType: 'json',
             success: function (rst) {
                 //第一步，获取上传的ID
                 //{"uploadId":"6192662f55e9bff63d7570e4region02z2","expireAt":1637589167}
-                // console.log('上传的ID: ', rst);
                 if (rst.error) {
                     _this.outputDom.text(rst.error);
                     return;
@@ -116,7 +139,8 @@ var BigFileUpload = {
             partContent = this.resource.slice(start, end);
 
         $.ajax({
-            url: _this.storageHost + '/buckets/' + _this.bucket + '/objects//uploads/' + _this.uploadId + '/' + chunkIndex,
+            // url: _this.storageHost + '/buckets/' + _this.bucket + '/objects//uploads/' + _this.uploadId + '/' + chunkIndex,
+            url: _this.storageHost + '/buckets/' + _this.bucket + '/objects/'+ _this.fileName +'/uploads/' + _this.uploadId + '/' + chunkIndex,
             type: 'PUT',
             processData: false,
             data:partContent,
@@ -143,7 +167,8 @@ var BigFileUpload = {
 
                 if (percent === 100) {
                     $.ajax({
-                        url: _this.storageHost + '/buckets/' + _this.bucket + '/objects/~/uploads/' + _this.uploadId,
+                        // url: _this.storageHost + '/buckets/' + _this.bucket + '/objects/~/uploads/' + _this.uploadId,
+                        url: _this.storageHost + '/buckets/' + _this.bucket + '/objects/'+ _this.fileName +'/uploads/' + _this.uploadId,
                         type: 'POST',
                         dataType: 'json',
                         contentType: 'application/json',
@@ -228,6 +253,10 @@ var BigFileUpload = {
         this.bucket = bucket;
         return this;
     },
+    setFileName: function (fileName) {
+        this.fileName = fileName;
+        return this;
+    },
 
     text: {
         en: {
@@ -241,7 +270,8 @@ var BigFileUpload = {
             error_upload_fail: 'Error: upload fail',
             error_invalid_server_return: 'Error: invalid server return value',
             error_invalid_resource_size: 'Error: invalid resource size',
-            error_invalid_resource_type: 'Error: invalid resource type'
+            error_invalid_resource_type: 'Error: invalid resource type',
+            error_encoded_object_name: 'Error：encoded object name fail'
         },
         zh: {
             status_upload_begin: '开始上传',
@@ -254,7 +284,8 @@ var BigFileUpload = {
             error_upload_fail: '错误：上传失败',
             error_invalid_server_return: '错误：无效的服务器返回值',
             error_invalid_resource_size: '错误：无效的文件大小',
-            error_invalid_resource_type: '错误：无效的文件类型'
+            error_invalid_resource_type: '错误：无效的文件类型',
+            error_encoded_object_name: '错误：加密对象名失败'
         }
     }
 };
