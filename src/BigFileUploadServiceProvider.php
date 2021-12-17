@@ -4,6 +4,7 @@ namespace Weiaibaicai\BigFileUpload;
 
 use Dcat\Admin\Extend\ServiceProvider;
 use Dcat\Admin\Form;
+use Dcat\Admin\Admin;
 use Weiaibaicai\BigFileUpload\Form\BigFileUpload as BigFileUploadForm;
 
 class BigFileUploadServiceProvider extends ServiceProvider
@@ -35,6 +36,18 @@ class BigFileUploadServiceProvider extends ServiceProvider
         }
 
         Form::extend('bigFileUpload', BigFileUploadForm::class);
+
+
+        $this->app->booted(function () {
+            Admin::app()->routes(function ($router) {
+                $attributes = array_merge([
+                    'prefix'     => config('admin.route.prefix'),
+                    'middleware' => config('admin.route.middleware'),
+                ], $this->config('route', []));
+
+                $router->group($attributes, __DIR__ . '/Http/routes.php');
+            });
+        });
 
         $this->publishes([
             __DIR__.'/../config/big-file-upload.php' => config_path('big-file-upload.php'),
