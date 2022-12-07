@@ -11,6 +11,7 @@ var BigFileUpload = {
 
         this.outputDom = this.wrapperDom.find('#' + name + '-output'),
             this.progressBarDom = this.wrapperDom.find('#' + name + '-progressbar'),
+            this.routePrefix = $('#' + name + '-routePrefix').val(),
             this.resource = this.resourceDom[0].files[0],
             this.resourceName = this.resource.name,
             this.resourceSize = this.resource.size,
@@ -58,7 +59,7 @@ var BigFileUpload = {
     encodedObjectName : function () {
         var _this = this;
         $.ajax({
-            url: '/admin/weiaibaicai/big-file-upload/encoded-object-name',
+            url: '/' + _this.routePrefix + '/weiaibaicai/big-file-upload/encoded-object-name',
             type: 'POST',
             dataType: 'json',
             contentType: 'application/json',

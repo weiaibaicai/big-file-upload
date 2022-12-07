@@ -8,10 +8,10 @@
 				<div id="{{$id}}-progressbar" style="background:lightseagreen;height:10px;width:0;"></div>
 			</div>
 			<span style="font-size:12px;color:#aaa;" id="{{$id}}-output"></span>
-			<input type="hidden" name="{{$column}}" id="{{$id}}-savedpath" value="{{ old($column, $value) }}">
 
 		</div>
 		@include('admin::form.help-block')
+		<input type="hidden"  id="{{$id}}-routePrefix" value="{{ config('admin.route.prefix') }}">
 
 	</div>
 </div>
