@@ -9,7 +9,7 @@
 			</div>
 			<span style="font-size:12px;color:#aaa;" id="{{$id}}-output"></span>
 
-			<input type="hidden" name="{{$column}}" id="{{$id}}-savedpath" value="{{ old($column, $value) }}">
+			<input type="hidden" name="{{$name}}" id="{{$id}}-savedpath" value="{{ old($column, $value) }}">
 
 		</div>
 		@include('admin::form.help-block')
