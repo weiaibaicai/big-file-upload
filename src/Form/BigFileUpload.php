@@ -51,13 +51,14 @@ class BigFileUpload extends Field
         $auth        = new \Qiniu\Auth($accessKey, $secretKey);
         $upToken     = $auth->uploadToken($bucket);
         $storageHost = config('big-file-upload.storage_host');
+        $routePrefix = config('admin.route.prefix');
 
         $this->script = <<<JS
 (function () {
         $('#{$id}-resource').bootstrapFileInput();
 
          $('#{$id}-resource').change(function(){
-            bigFileUpload('{$id}', this).setStorageHost('{$storageHost}').setUpToken('{$upToken}').setBucket('{$bucket}').setSavedPathField('#{$id}-savedpath').success().upload('{$id}')
+            bigFileUpload('{$id}', this).setStorageHost('{$storageHost}').setRoutePrefix('{$routePrefix}').setUpToken('{$upToken}').setBucket('{$bucket}').setSavedPathField('#{$id}-savedpath').success().upload('{$id}')
         });
 })();
 JS;

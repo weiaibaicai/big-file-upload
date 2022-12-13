@@ -11,7 +11,6 @@ var BigFileUpload = {
 
         this.outputDom = this.wrapperDom.find('#' + name + '-output'),
             this.progressBarDom = this.wrapperDom.find('#' + name + '-progressbar'),
-            this.routePrefix = $('#' + name + '-routePrefix').val(),
             this.resource = this.resourceDom[0].files[0],
             this.resourceName = this.resource.name,
             this.resourceSize = this.resource.size,
@@ -70,6 +69,7 @@ var BigFileUpload = {
                 if (rst.error === 'undefined' || rst.error) {
                     return;
                 }
+
                 _this.setFileName(rst.data.object_name);
             }
         });
@@ -258,6 +258,10 @@ var BigFileUpload = {
         this.fileName = fileName;
         return this;
     },
+    setRoutePrefix: function (routePrefix) {
+        this.routePrefix = routePrefix;
+        return this;
+    },
 
     text: {
         en: {
@@ -298,5 +302,6 @@ function bigFileUpload(name, resource) {
     newInstance.storageHost = '七牛服务器域名';
     newInstance.upToken = 'myToken';
     newInstance.bucket = 'myBucket';
+    newInstance.routePrefix = 'admin';
     return newInstance;
 }

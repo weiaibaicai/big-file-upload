@@ -35,3 +35,8 @@ $form->bigFileUpload('video', '视频')->help('备注备注');
 ## 安装问题
 1. 发布文件时可能存在权限问题，记得给足权限。可在项目根目录执行 `chmod -R 755 public/vendor`
 2. 读取不到已经发布的配置，可清空一下缓存 `php artisan config:clear`
+
+
+## 安装问题
+1. 发布文件时可能存在权限问题，记得给足权限。可在项目根目录执行 `chmod -R 755 public/vendor`
+2. 读取不到已经发布的配置，可清空一下缓存 `php artisan config:clear`
